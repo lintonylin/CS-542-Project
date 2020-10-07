@@ -1,5 +1,5 @@
 create table innodb.WorldTesting ( 
-dat datetime, 
+dat date, 
 active integer, 
 positive integer,
 daily_positive integer,
