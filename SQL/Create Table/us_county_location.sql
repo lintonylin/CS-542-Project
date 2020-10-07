@@ -5,4 +5,4 @@ Us_county varchar(50),
 PRIMARY KEY(Country_Region, State, Us_county));
 
 insert into innodb.UsCountyLocation
-select distinct "us_county" as Country_Region,state,county from innodb.US_COUNTY_TEST;
+select distinct "United States" as Country_Region,state,county from innodb.US_COUNTY_TEST;
