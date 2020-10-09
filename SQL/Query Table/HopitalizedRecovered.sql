@@ -1,7 +1,7 @@
 Select Country_Region, sum(daily_positive) As weekly_positive
-from innodb.WorldTesting
-where dat > '2020-03-07' and dat < '2020-03-14' 
-group by Country_Region;
+from innodb.world_hospitalizing
+where dat > '2020-03-01' and dat < '2020-03-31' 
+and Country_Region = '';
 
 
 Select sum(weekly_positive) As weekly_sum
