@@ -3,6 +3,12 @@ from flask import Flask
 import pymysql
 import json
 
+"""
+The parameters "dat", "state", "us_county" are separated from the SQL command (for easier input)
+This file accepts the input us_county to be empty. If a county name is specified, then it will query for that county, if not, then it will query for the state.
+This file will output a JSON file named in the format "STATE COUNTY DATE.json". In the file, it will include the state name, county name(s), and query result(s).
+"""
+
 host = 'cs542.chpy8wzjpky3.us-east-1.rds.amazonaws.com'
 user = 'admin'
 password='Norwich123'
