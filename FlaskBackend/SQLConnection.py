@@ -1,5 +1,3 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 import pymysql
 
 host = 'cs542.chpy8wzjpky3.us-east-1.rds.amazonaws.com'

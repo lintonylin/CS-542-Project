@@ -1,0 +1,1 @@
+select ifnull(sum(cases),0) as cases from innodb.US_COUNTY_TEST where county like "Cook" and date between '2020-01-21' and '2020-01-27';
