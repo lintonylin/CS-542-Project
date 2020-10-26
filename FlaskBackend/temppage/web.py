@@ -48,7 +48,6 @@ def search4():
     query = "SELECT a.Country_Region, a.weekly_positive, CONCAT( ROUND( a.weekly_positive / b.weekly_sum * 100, 2 ), \'\', \'%\' ) AS percent FROM( Select Country_Region, sum(daily_positive) As weekly_positive from innodb.WorldTesting where dat > {0} and dat < {1} group by Country_Region ) a,(Select sum(weekly_positive) As weekly_sum from (Select Country_Region, sum(daily_positive) As weekly_positive from innodb.WorldTesting where dat > {2} and dat < {3} group by Country_Region) As temp) b where a.Country_Region={4}; ".format(startdate, enddate, startdate, enddate, country)
     cur.execute(query)
     datas = cur.fetchall()
-    print(datas)
     return render_template('search4.html',items=datas)
 
 

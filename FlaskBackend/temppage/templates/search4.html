@@ -58,8 +58,8 @@
 	.clearfix:after{clear:both;}
 	.main{float: left;width: 800px; }
 	.side{margin-left: 900px; background-color: gray; margin-top:100px;}
-	path {
-      fill: #fff;
+	.side path {
+        fill: #fff;
       stroke: #000;
     }
 	</style>
@@ -134,6 +134,61 @@
 
 	//svg.append("circle").attr("class","point").attr("cx",880).attr("cy",170).attr("r",10).style("fill", "#ff5555");
   })();
+</script>
+
+<script src="https://unpkg.com/vega@5.17.0/build/vega.min.js"></script>
+<script src="https://unpkg.com/vega-lite@4.17.0/build/vega-lite.min.js"></script>
+<script src="https://unpkg.com/vega-lite-api@0.15.0/build/vega-lite-api.min.js"></script>
+<script src="https://unpkg.com/vega-tooltip@0.24.2/build/vega-tooltip.min.js"></script>
+<script>
+    if ('{{ items }}'){
+        (async () => {
+            const data = JSON.parse('{{ items }}'.replaceAll('&#39', '\"').replaceAll(';','').replaceAll('Decimal(','').replaceAll(')',''));
+            console.log(data);
+
+            // Step 3. Draw the SVG.
+            // First let's create an empty SVG with 960px width and 600px height.
+            const dark = '#3e3c38';
+            const config = {
+              axis: {
+                domain: false,
+                tickColor: 'lightGray'
+              },
+              style: {
+                "guide-label": {
+                  fontSize: 20,
+                  fill: dark
+                },
+                "guide-title": {
+                  fontSize: 20,
+                  fill: dark
+                }
+              }
+            };
+            vl.register(vega, vegaLite, {
+              view: { renderer: 'svg' },
+              init: view => { view.tooltip(new vegaTooltip.Handler().call); }
+            });
+            const viz = vl
+              .markArc()
+              .encode(
+                //vl.x().fieldN('Country_Region'),
+                vl.theta().fieldQ('weekly_positive'),
+                vl.color().fieldN('Country_Region'),
+                vl.order().fieldQ('weekly_positive'),
+                vl.tooltip([vl.fieldN('percent')])
+              );
+            const marks = viz
+            .data(data)
+            .width(960)
+            .height(600)
+            .autosize({ type: 'fit', contains: 'padding' })
+            .config(config);
+
+            document.body.appendChild(await marks.render());
+            //svg.append("circle").attr("class","point").attr("cx",880).attr("cy",170).attr("r",10).style("fill", "#ff5555");
+          })();
+    }
 </script>
 
 <script type="text/javascript">
