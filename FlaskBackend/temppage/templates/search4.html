@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="cn-zh">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Result</title>
+	<style type="text/css">
+	.button {
+		background-color: white;
+		border: 2px solid #ff6666;
+		color: black;
+		padding: 12px 24px;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		font-size: 18px;
+		font-family: Georgia, "Times New Roman", Times, serif;
+		-webkit-transition-duration: 0.4s;
+		transition-duration: 0.4s;
+		border-radius: 4px;
+		margin-right: 5%;
+	}
+	.button:hover {
+		background-color: #ff6666;
+		color: white;
+	}
+	.inputBoxes{
+		padding-left:5%;
+		padding-top:20px;
+		padding-bottom:10px;
+		font-size: 22px;
+		font-family: Georgia, "Times New Roman", Times, serif;
+	}
+	input{
+		outline-style: none;
+		border: 0px;
+		border-radius: 4px;
+		background-color:#ff8787;
+		margin-right:20px;
+		padding: 7px 0px;
+		font-family: "Microsoft YaHei";
+	}
+	hr {
+		height: 5px;
+		border: none;
+		background-color: grey;
+		margin-top: 10px;
+		background-color: #ff8787;
+		box-shadow: 0 0 10px 1px rgba(220, 70, 120, 0.4);
+	}
+	table {border-collapse: collapse; font-family: "Times New Roman";}
+	th,td {padding:0.65em;}
+	th {background-color: #555555; nonerepeat scroll 0 0; color: white; font-size:20px;}
+	th:first-child {border-radius: 9px 0 0 0;}
+	th:last-child {border-radius: 0 9px 0 0;}
+	tbody tr {border: 1px solid #555555; font-size:18px;}
+	.clearfix:before,
+	.clearfix:after{content: ' ';display: table;}
+	.clearfix:after{clear:both;}
+	.main{float: left;width: 800px; }
+	.side{margin-left: 900px; background-color: gray; margin-top:100px;}
+	path {
+      fill: #fff;
+      stroke: #000;
+    }
+	</style>
+</head>
+<body>
+
+<form action="/4/" method = "post">
+<div class="inputBoxes">
+	<p> StartDate (XXXX-XX-XX)  <input type="text" name="startdate"> EndDate (XXXX-XX-XX)  <input type="text" name="enddate"> Country  <input type="text" name="country"></p>
+</div>
+	<div style="padding-left:15%; padding-bottom:20px">
+		<input type="submit" value = "Submit" class="button">
+		<input type="button" value = "Home" onclick = "goBack()" class="button">
+	</div>
+</form>
+
+<hr>
+
+<div align="" style="padding-left:5%; padding-top:30px" class="main">
+        <form action="/4/" method="post">
+        <table>
+			{% if items %}
+			<thead>
+            <tr style="text-align:center">
+                <th>Country</th>
+                <th>Cases</th>
+                <th>Percentage</th>
+			</tr>
+			</thead>
+			{% endif %}
+			<tbody>
+            {% for i in items %}
+            <tr style="text-align:center">
+                <td>{{ i.Country_Region }}</td>
+                <td>{{ i.weekly_positive }}</td>
+                <td>{{ i.percent }}</td>
+            {% endfor %}
+			</tbody>
+        </table>
+        </form>
+</div>
+
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="https://d3js.org/topojson.v3.min.js"></script>
+<script>
+  (async () => {
+    // Step 2. Load the US map data.
+    const world = await d3.json('https://unpkg.com/world-atlas@1.1.4/world/50m.json');
+    const data = topojson.feature(world,world.objects.countries).features;
+
+    // Step 3. Draw the SVG.
+    // First let's create an empty SVG with 960px width and 600px height.
+    const width = 960;
+    const height = 600;
+	const div = d3.select('body').append('div').attr('class','side');
+    const svg = div
+      .append('svg')
+      .attr('width', width)
+      .attr('height', height);
+
+    // Create an instance of geoPath.
+    const path = d3.geoPath().projection(d3.geoMercator());
+
+    // Use the path to plot the US map based on the geometry data.
+    svg.append('g')
+      .selectAll('path')
+      .data(data)
+      .enter()
+      .append('path')
+      .attr('d', path);
+
+
+	//svg.append("circle").attr("class","point").attr("cx",880).attr("cy",170).attr("r",10).style("fill", "#ff5555");
+  })();
+</script>
+
+<script type="text/javascript">
+	function goBack(){
+		window.location.replace("../")
+	}
+</script>
+
+</body>
+</html>
