@@ -42,13 +42,27 @@ def search2():
 
 @app.route('/4/',methods=['POST'])
 def search4():
-    startdate = "\"" + request.values.get('startdate') + "\""
-    enddate = "\"" + request.values.get('enddate') + "\""
-    country = "\"" + request.values.get('country') + "\""
-    query = "SELECT a.Country_Region, a.weekly_positive, CONCAT( ROUND( a.weekly_positive / b.weekly_sum * 100, 2 ), \'\', \'%\' ) AS percent FROM( Select Country_Region, sum(daily_positive) As weekly_positive from innodb.WorldTesting where dat > {0} and dat < {1} group by Country_Region ) a,(Select sum(weekly_positive) As weekly_sum from (Select Country_Region, sum(daily_positive) As weekly_positive from innodb.WorldTesting where dat > {2} and dat < {3} group by Country_Region) As temp) b where a.Country_Region={4}; ".format(startdate, enddate, startdate, enddate, country)
-    cur.execute(query)
-    datas = cur.fetchall()
-    return render_template('search4.html',items=datas)
+    if request.values.get('country') == '':
+        startdate = "\"" + request.values.get('startdate') + "\""
+        enddate = "\"" + request.values.get('enddate') + "\""
+        query = "SELECT a.Country_Region, a.weekly_positive, CONCAT( ROUND( a.weekly_positive / b.weekly_sum * 100, 2 ), \'\', \'%\' ) AS percent FROM( Select Country_Region, sum(daily_positive) As weekly_positive from innodb.WorldTesting where dat > {0} and dat < {1} group by Country_Region ) a,(Select sum(weekly_positive) As weekly_sum from (Select Country_Region, sum(daily_positive) As weekly_positive from innodb.WorldTesting where dat > {2} and dat < {3} group by Country_Region) As temp) b order by a.weekly_positive desc; ".format(
+            startdate, enddate, startdate, enddate)
+        cur.execute(query)
+        datas = cur.fetchall()
+        result = []
+        for data in datas:
+            percent = float(data['percent'].replace('%', ''))
+            if percent != 0:
+                result.append(data)
+        return render_template('search4.html', items=result)
+    else:
+        startdate = "\"" + request.values.get('startdate') + "\""
+        enddate = "\"" + request.values.get('enddate') + "\""
+        country = "\"" + request.values.get('country') + "\""
+        query = "SELECT a.Country_Region, a.weekly_positive, CONCAT( ROUND( a.weekly_positive / b.weekly_sum * 100, 2 ), \'\', \'%\' ) AS percent FROM( Select Country_Region, sum(daily_positive) As weekly_positive from innodb.WorldTesting where dat > {0} and dat < {1} group by Country_Region ) a,(Select sum(weekly_positive) As weekly_sum from (Select Country_Region, sum(daily_positive) As weekly_positive from innodb.WorldTesting where dat > {2} and dat < {3} group by Country_Region) As temp) b where a.Country_Region={4}; ".format(startdate, enddate, startdate, enddate, country)
+        cur.execute(query)
+        datas = cur.fetchall()
+        return render_template('search4.html',items=datas)
 
 
 if __name__ == '__main__':

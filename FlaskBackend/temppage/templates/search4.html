@@ -68,7 +68,7 @@
 
 <form action="/4/" method = "post">
 <div class="inputBoxes">
-	<p> StartDate (XXXX-XX-XX)  <input type="text" name="startdate"> EndDate (XXXX-XX-XX)  <input type="text" name="enddate"> Country  <input type="text" name="country"></p>
+	<p> StartDate (XXXX-XX-XX)  <input type="text" name="startdate"> EndDate (XXXX-XX-XX)  <input type="text" name="enddate"> Country(Optional)  <input type="text" name="country"></p>
 </div>
 	<div style="padding-left:15%; padding-bottom:20px">
 		<input type="submit" value = "Submit" class="button">
@@ -176,7 +176,7 @@
                 vl.theta().fieldQ('weekly_positive'),
                 vl.color().fieldN('Country_Region'),
                 vl.order().fieldQ('weekly_positive'),
-                vl.tooltip([vl.fieldN('percent')])
+                vl.tooltip([vl.fieldN('Country_Region'), vl.fieldN('percent')])
               );
             const marks = viz
             .data(data)
