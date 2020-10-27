@@ -94,7 +94,7 @@
             {% for i in items %}
             <tr style="text-align:center">
                 <td>{{ i.Country_Region }}</td>
-                <td>{{ i.weekly_positive }}</td>
+                <td>{{ i.positive }}</td>
                 <td>{{ i.percent }}</td>
             {% endfor %}
 			</tbody>
@@ -144,7 +144,6 @@
     if ('{{ items }}'){
         (async () => {
             const data = JSON.parse('{{ items }}'.replaceAll('&#39', '\"').replaceAll(';','').replaceAll('Decimal(','').replaceAll(')',''));
-            console.log(data);
 
             // Step 3. Draw the SVG.
             // First let's create an empty SVG with 960px width and 600px height.
@@ -173,10 +172,10 @@
               .markArc()
               .encode(
                 //vl.x().fieldN('Country_Region'),
-                vl.theta().fieldQ('weekly_positive'),
+                vl.theta().fieldQ('positive'),
                 vl.color().fieldN('Country_Region'),
-                vl.order().fieldQ('weekly_positive'),
-                vl.tooltip([vl.fieldN('Country_Region'), vl.fieldN('percent')])
+                vl.order().fieldQ('positive'),
+                vl.tooltip([vl.fieldN('Country_Region'), vl.fieldQ('positive'), vl.fieldN('percent')])
               );
             const marks = viz
             .data(data)
