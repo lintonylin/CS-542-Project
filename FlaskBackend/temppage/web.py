@@ -28,7 +28,7 @@ def search():
         return render_template('search4.html')
     elif qtype == 'new deaths':
         type_number = 5
-        return render_template('base.html')
+        return render_template('search5.html')
 
 @app.route('/2/',methods=['POST'])
 def search2():
@@ -63,6 +63,32 @@ def search4():
         cur.execute(query)
         datas = cur.fetchall()
         return render_template('search4.html',items=datas)
+
+
+@app.route('/5/',methods=['POST'])
+def search5():
+    if request.values.get('country') == '':
+        startdate = "\"" + request.values.get('startdate') + "\""
+        enddate = "\"" + request.values.get('enddate') + "\""
+        query = "SELECT a.Country_Region, a.weekly_death, CONCAT( ROUND( a.weekly_death / b.weekly_sum * 100, 2 ), \'\', \'%\' ) AS percent FROM ( Select Country_Region, sum(death) AS weekly_death from innodb.world_death Where dat > {0} and dat < {1} group by Country_Region) a,(Select sum(weekly_death) As weekly_sum from (Select Country_Region, sum(death) AS weekly_death from innodb.world_death Where dat > {2} and dat < {3} group by Country_Region) AS temp) b order by a.weekly_death desc; ".format(
+            startdate, enddate, startdate, enddate)
+        cur.execute(query)
+        datas = cur.fetchall()
+        result = []
+        for data in datas:
+            percent = float(data['percent'].replace('%', ''))
+            if percent != 0:
+                result.append(data)
+        return render_template('search5.html', items=result)
+    else:
+        startdate = "\"" + request.values.get('startdate') + "\""
+        enddate = "\"" + request.values.get('enddate') + "\""
+        country = "\"" + request.values.get('country') + "\""
+        query = "SELECT a.Country_Region, a.weekly_death, CONCAT( ROUND( a.weekly_death / b.weekly_sum * 100, 2 ), \'\', \'%\' ) AS percent FROM ( Select Country_Region, sum(death) AS weekly_death from innodb.world_death Where dat > {0} and dat < {1} group by Country_Region) a,(Select sum(weekly_death) As weekly_sum from (Select Country_Region, sum(death) AS weekly_death from innodb.world_death Where dat > {2} and dat < {3} group by Country_Region) AS temp) b where a.Country_Region={4}; ".format(startdate, enddate, startdate, enddate, country)
+        cur.execute(query)
+        datas = cur.fetchall()
+        return render_template('search5.html',items=datas)
+
 
 
 if __name__ == '__main__':
