@@ -24,4 +24,24 @@ END$$
 
 DELIMITER ;
 
+DELIMITER $$
+
+CREATE TRIGGER Tested
+    BEFORE INSERT
+    ON innodb.WorldTesting FOR EACH ROW
+BEGIN
+    -- statements
+   IF new.total_tested < new.daily_tested THEN
+    signal sqlstate '45000' set message_text = 'number of tests error!';
+	END IF; 
+
+END$$    
+
+DELIMITER ;
+
+
+create view CaseInSF
+AS
+select cases from innodb.UsCountyCaseInformation
+where dat = '2020-06-02' and state = 'California' and us_county = 'San Francisco';
 
