@@ -4,7 +4,7 @@ alter table innodb.UsCountyCaseInformation add constraint CaseCheck check (cases
 
 DELIMITER $$
 
-CREATE TRIGGER trigger_name
+CREATE TRIGGER SumDeathTrigger
     BEFORE INSERT
     ON innodb.UsCountyCaseInformation FOR EACH ROW
 BEGIN
@@ -23,4 +23,5 @@ BEGIN
 END$$    
 
 DELIMITER ;
+
 
