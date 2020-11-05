@@ -33,9 +33,8 @@ def search():
 def search1():
     Date1 = request.values.get('date1')
     Date2 = request.values.get('date2')
-    State = request.values.get('state')
     County = request.values.get('county')
-    sql = "select ifnull(sum(cases),0) as cases from innodb.US_COUNTY_TEST where county like"+ County+ "and date between" + Date1+ " and"+ Date2";
+    sql = 'select cases as cases,date,county from innodb.US_COUNTY_TEST where county like' + County +' and date between '+Date1+' and '+Date2+';'
     cur.execute(sql)
     datas = cur.fetchall()
     return render_template('search1.html',items=datas)
