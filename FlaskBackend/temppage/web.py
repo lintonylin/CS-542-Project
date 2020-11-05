@@ -16,7 +16,7 @@ def search():
     qtype = request.values.get('qt')
     if qtype == 'cases in a week':
         type_number = 1
-        return render_template('base.html')
+        return render_template('search1.html')
     elif qtype == 'cases on a day':
         type_number = 2
         return render_template('search2.html')
@@ -29,6 +29,16 @@ def search():
     elif qtype == 'new deaths':
         type_number = 5
         return render_template('search5.html')
+@app.route('/1/',methods=['POST'])
+def search1():
+    Date1 = request.values.get('date1')
+    Date2 = request.values.get('date2')
+    State = request.values.get('state')
+    County = request.values.get('county')
+    sql = "select ifnull(sum(cases),0) as cases from innodb.US_COUNTY_TEST where county like"+ County+ "and date between" + Date1+ " and"+ Date2";
+    cur.execute(sql)
+    datas = cur.fetchall()
+    return render_template('search1.html',items=datas)
 
 @app.route('/2/',methods=['POST'])
 def search2():
