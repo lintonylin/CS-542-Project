@@ -172,10 +172,10 @@
               .markArc()
               .encode(
                 //vl.x().fieldN('Country_Region'),
-                vl.theta().fieldQ('positive'),
+                vl.theta().fieldQ('death'),
                 vl.color().fieldN('Country_Region'),
-                vl.order().fieldQ('positive'),
-                vl.tooltip([vl.fieldN('Country_Region'), vl.fieldQ('positive'), vl.fieldN('percent')])
+                vl.order().fieldQ('death'),
+                vl.tooltip([vl.fieldN('Country_Region'), vl.fieldQ('death'), vl.fieldN('percent')])
               );
             const marks = viz
             .data(data)
@@ -198,4 +198,3 @@
 
 </body>
 </html>
- 
