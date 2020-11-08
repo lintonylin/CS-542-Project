@@ -1,6 +1,6 @@
-from flask import Flask,render_template,request
 import pymysql
-
+from flask import Flask, render_template, request
+import json
 app = Flask(__name__)
 conn = pymysql.connect(user='admin', host='cs542.chpy8wzjpky3.us-east-1.rds.amazonaws.com', passwd='Norwich123', db='innodb',cursorclass=pymysql.cursors.DictCursor)
 cur = conn.cursor()
@@ -39,9 +39,13 @@ def search1():
     datas = cur.fetchall()
     print(datas)
     result = []
-    for data in datas:
+
         # [{"cases": 1, 'date': '2020-1-25'}, {'cases': 1, 'date': '2020-1-26'}, {'cases': 1, 'date': datetime.datetime(2020, 1, 27, 0, 0)}]
-        
+    for data in datas:
+        data['date'] = data['date'].strftime('%d')
+        result.append(data)
+    r1=json.dumps(result, indent=4, sort_keys=True, default=str)
+    print(r1)
     return render_template('search1.html',items=datas)
 
 @app.route('/2/',methods=['POST'])
