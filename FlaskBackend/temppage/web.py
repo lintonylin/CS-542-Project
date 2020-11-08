@@ -34,9 +34,14 @@ def search1():
     Date1 = request.values.get('date1')
     Date2 = request.values.get('date2')
     County = request.values.get('county')
-    sql = 'select cases as cases,date,county from innodb.US_COUNTY_TEST where county like' + County +' and date between '+Date1+' and '+Date2+';'
+    sql = "select cases,date from innodb.US_COUNTY_TEST where county like '%" + County + "%' and date between '"+Date1+"' and '"+Date2+"';"
     cur.execute(sql)
     datas = cur.fetchall()
+    print(datas)
+    result = []
+    for data in datas:
+        # [{"cases": 1, 'date': '2020-1-25'}, {'cases': 1, 'date': '2020-1-26'}, {'cases': 1, 'date': datetime.datetime(2020, 1, 27, 0, 0)}]
+        
     return render_template('search1.html',items=datas)
 
 @app.route('/2/',methods=['POST'])

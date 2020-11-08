@@ -11,3 +11,7 @@ replace into innodb.world_hospitalizing
 select hospitalized, recovered, Date, hospitalizedCurr , Country_Region,  Province_State from innodb.tested_worldwide;
 
 WorldTestingselect ifnull(sum(cases),0) as cases from innodb.US_COUNTY_TEST where county like "Cook" and date between '2020-01-21' and '2020-01-27';
+select * from worldtesting;
+select  cases as cases from innodb.US_COUNTY_TEST where county like "Orange" and date between '2020-01-21' and '2020-01-27';
+select * from innodb.US_COUNTY_TEST where county like "Orange";
+select * from innodb.US_COUNTY_TEST;
