@@ -85,7 +85,7 @@
 			<thead>
             <tr style="text-align:center">
                 <th>Country</th>
-                <th>Cases</th>
+                <th>Tested</th>
                 <th>Percentage</th>
 			</tr>
 			</thead>
@@ -94,7 +94,7 @@
             {% for i in items %}
             <tr style="text-align:center">
                 <td>{{ i.Country_Region }}</td>
-                <td>{{ i.death}}</td>
+                <td>{{ i.tested }}</td>
                 <td>{{ i.percent }}</td>
             {% endfor %}
 			</tbody>
@@ -104,37 +104,7 @@
 
 <script src="https://d3js.org/d3.v5.min.js"></script>
 <script src="https://d3js.org/topojson.v3.min.js"></script>
-<script>
-  (async () => {
-    // Step 2. Load the US map data.
-    const world = await d3.json('https://unpkg.com/world-atlas@1.1.4/world/50m.json');
-    const data = topojson.feature(world,world.objects.countries).features;
 
-    // Step 3. Draw the SVG.
-    // First let's create an empty SVG with 960px width and 600px height.
-    const width = 960;
-    const height = 600;
-	const div = d3.select('body').append('div').attr('class','side');
-    const svg = div
-      .append('svg')
-      .attr('width', width)
-      .attr('height', height);
-
-    // Create an instance of geoPath.
-    const path = d3.geoPath().projection(d3.geoMercator());
-
-    // Use the path to plot the US map based on the geometry data.
-    svg.append('g')
-      .selectAll('path')
-      .data(data)
-      .enter()
-      .append('path')
-      .attr('d', path);
-
-
-	//svg.append("circle").attr("class","point").attr("cx",880).attr("cy",170).attr("r",10).style("fill", "#ff5555");
-  })();
-</script>
 
 <script src="https://unpkg.com/vega@5.17.0/build/vega.min.js"></script>
 <script src="https://unpkg.com/vega-lite@4.17.0/build/vega-lite.min.js"></script>
@@ -144,6 +114,7 @@
     if ('{{ items }}'){
         (async () => {
             const data = JSON.parse('{{ items }}'.replaceAll('&#39', '\"').replaceAll(';','').replaceAll('Decimal(','').replaceAll(')',''));
+            console.log(data);
 
             // Step 3. Draw the SVG.
             // First let's create an empty SVG with 960px width and 600px height.
@@ -172,10 +143,10 @@
               .markArc()
               .encode(
                 //vl.x().fieldN('Country_Region'),
-                vl.theta().fieldQ('death'),
+                vl.theta().fieldQ('tested'),
                 vl.color().fieldN('Country_Region'),
-                vl.order().fieldQ('death'),
-                vl.tooltip([vl.fieldN('Country_Region'), vl.fieldQ('death'), vl.fieldN('percent')])
+                vl.order().fieldQ('positive'),
+                vl.tooltip([vl.fieldN('Country_Region'), vl.fieldQ('tested'), vl.fieldN('percent')])
               );
             const marks = viz
             .data(data)

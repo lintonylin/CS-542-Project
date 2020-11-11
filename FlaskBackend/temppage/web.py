@@ -89,7 +89,7 @@ def search5():
     if request.values.get('country') == '':
         startdate = "\"" + request.values.get('startdate') + "\""
         enddate = "\"" + request.values.get('enddate') + "\""
-        query = "SELECT a.Country_Region, a.weekly_death as death, CONCAT( ROUND( a.weekly_death / b.weekly_sum * 100, 2 ), \'\', \'%\' ) AS percent FROM ( Select Country_Region, sum(death) AS weekly_death from innodb.world_death Where dat > {0} and dat < {1} group by Country_Region) a,(Select sum(weekly_death) As weekly_sum from (Select Country_Region, sum(death) AS weekly_death from innodb.world_death Where dat > {2} and dat < {3} group by Country_Region) AS temp) b order by a.weekly_death desc; ".format(
+        query = "SELECT a.Country_Region, a.weekly_tested as tested, CONCAT( ROUND( a.weekly_tested / b.weekly_sum * 100, 2 ), \'\', \'%\' ) AS percent FROM( Select Country_Region, sum(daily_tested) As weekly_tested from innodb.WorldTesting where dat > {0} and dat < {1} and Province_State='All States' group by Country_Region ) a,(Select sum(weekly_tested) As weekly_sum from (Select Country_Region, sum(daily_tested) As weekly_tested from innodb.WorldTesting where dat > {2} and dat < {3} and Province_State='All States' group by Country_Region) As temp) b order by a.weekly_tested desc; ".format(
             startdate, enddate, startdate, enddate)
         cur.execute(query)
         datas = cur.fetchall()
@@ -103,7 +103,7 @@ def search5():
         startdate = "\"" + request.values.get('startdate') + "\""
         enddate = "\"" + request.values.get('enddate') + "\""
         country = "\"" + request.values.get('country') + "\""
-        query = "SELECT a.Country_Region, a.weekly_death as death, CONCAT( ROUND( a.weekly_death / b.weekly_sum * 100, 2 ), \'\', \'%\' ) AS percent FROM ( Select Country_Region, sum(death) AS weekly_death from innodb.world_death Where dat > {0} and dat < {1} group by Country_Region) a,(Select sum(weekly_death) As weekly_sum from (Select Country_Region, sum(death) AS weekly_death from innodb.world_death Where dat > {2} and dat < {3} group by Country_Region) AS temp) b where a.Country_Region={4}; ".format(startdate, enddate, startdate, enddate, country)
+        query = "SELECT a.Country_Region, a.weekly_tested as tested, CONCAT( ROUND( a.weekly_tested / b.weekly_sum * 100, 2 ), \'\', \'%\' ) AS percent FROM( Select Country_Region, sum(daily_tested) As weekly_tested from innodb.WorldTesting where dat > {0} and dat < {1} and Province_State='All States' group by Country_Region ) a,(Select sum(weekly_tested) As weekly_sum from (Select Country_Region, sum(daily_tested) As weekly_tested from innodb.WorldTesting where dat > {2} and dat < {3} and Province_State='All States' group by Country_Region) As temp) b where a.Country_Region={4}; ".format(startdate, enddate, startdate, enddate, country)
         cur.execute(query)
         datas = cur.fetchall()
         return render_template('search5.html',items=datas)
