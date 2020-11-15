@@ -22,7 +22,7 @@ def search():
         return render_template('search2.html')
     elif qtype == 'hospitalized rate':
         type_number = 3
-        return render_template('base.html')
+        return render_template('search3.html')
     elif qtype == 'new cases':
         type_number = 4
         return render_template('search4.html')
