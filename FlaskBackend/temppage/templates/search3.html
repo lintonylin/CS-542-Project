@@ -1,124 +1,184 @@
-import pymysql
-from flask import Flask, render_template, request
-import json
-app = Flask(__name__)
-conn = pymysql.connect(user='admin', host='cs542.chpy8wzjpky3.us-east-1.rds.amazonaws.com', passwd='Norwich123', db='innodb',cursorclass=pymysql.cursors.DictCursor)
-cur = conn.cursor()
+<!DOCTYPE html>
+<html lang="cn-zh">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Result</title>
+	<style type="text/css">
+	.button {
+		background-color: white;
+		border: 2px solid #ff6666;
+		color: black;
+		padding: 12px 24px;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		font-size: 18px;
+		font-family: Georgia, "Times New Roman", Times, serif;
+		-webkit-transition-duration: 0.4s;
+		transition-duration: 0.4s;
+		border-radius: 4px;
+		margin-right: 5%;
+	}
+	.button:hover {
+		background-color: #ff6666;
+		color: white;
+	}
+	.inputBoxes{
+		padding-left:5%;
+		padding-top:20px;
+		padding-bottom:10px;
+		font-size: 22px;
+		font-family: Georgia, "Times New Roman", Times, serif;
+	}
+	input{
+		outline-style: none;
+		border: 0px;
+		border-radius: 4px;
+		background-color:#ff8787;
+		margin-right:20px;
+		padding: 7px 0px;
+		font-family: "Microsoft YaHei";
+	}
+	hr {
+		height: 5px;
+		border: none;
+		background-color: grey;
+		margin-top: 10px;
+		background-color: #ff8787;
+		box-shadow: 0 0 10px 1px rgba(220, 70, 120, 0.4);
+	}
+	table {border-collapse: collapse; font-family: "Times New Roman";}
+	th,td {padding:0.65em;}
+	th {background-color: #555555; nonerepeat scroll 0 0; color: white; font-size:20px;}
+	th:first-child {border-radius: 9px 0 0 0;}
+	th:last-child {border-radius: 0 9px 0 0;}
+	tbody tr {border: 1px solid #555555; font-size:18px;}
+	.clearfix:before,
+	.clearfix:after{content: ' ';display: table;}
+	.clearfix:after{clear:both;}
+	.main{float: left;width: 800px; }
+	.side{margin-left: 800px; background-color: gray; margin-top:100px;}
+	.side path {
+        fill: #fff;
+      stroke: #000;
+    }
+	</style>
+</head>
+<body>
 
-@app.route('/')
-def index():
-    return render_template('base.html')
+<form action="/3/" method = "post">
+<div class="inputBoxes">
+	<p> StartDate <input type="date" name="startdate"> EndDate  <input type="date" name="enddate"> Country <input type="text" name="country"></p>
+</div>
+	<div style="padding-left:15%; padding-bottom:20px">
+		<input type="submit" value = "Submit" class="button">
+		<input type="button" value = "Home" onclick = "goBack()" class="button">
+	</div>
+</form>
 
-type_number = 0
+<hr>
 
-@app.route('/gets/',methods=['POST'])
-def search():
-    qtype = request.values.get('qt')
-    if qtype == 'cases in a week':
-        type_number = 1
-        return render_template('search1.html')
-    elif qtype == 'cases on a day':
-        type_number = 2
-        return render_template('search2.html')
-    elif qtype == 'hospitalized rate':
-        type_number = 3
-        return render_template('search3.html')
-    elif qtype == 'new cases':
-        type_number = 4
-        return render_template('search4.html')
-    elif qtype == 'new deaths':
-        type_number = 5
-        return render_template('search5.html')
+<div align="" style="padding-left:5%; margin-left:100px; padding-top:30px" class="main">
+        <form action="/3/" method="post">
+        <table>
+			{% if items %}
+			<thead>
+            <tr style="text-align:center">
+                <th>Country</th>
+                <th>Domain</th>
+                <th>Cases</th>
+                <th>Percentage</th>
+			</tr>
+			</thead>
+			{% endif %}
+			<tbody>
+            {% for i in items %}
+            <tr style="text-align:center">
+				<td>{{ i.Country }}</td>
+                <td><b>Total Cases</b></td>
+                <td>{{ i.Total_Cases }}</td>
+                <td>100%</td>
+            <tr style="text-align:center">
+				<td>{{ i.Country }}</td>
+                <td><b>Recovered</b></td>
+                <td>{{ i.Recovered }}</td>
+                <td>{{ i.Recover_Rate }}%</td>
+            <tr style="text-align:center">
+				<td>{{ i.Country }}</td>
+                <td><b>Hospitalized</b></td>
+                <td>{{ i.Hospitalized }}</td>
+                <td>{{ i.Hospitalized_Rate }}%</td>
+			</tbody>
+            {% endfor %}
+        </table>
+        </form>
+</div>
 
-@app.route('/1/',methods=['POST'])
-def search1():
-    Date1 = request.values.get('date1')
-    County = request.values.get('county')
-    State = request.values.get('state')
-    sql = "select max(cast(cases as decimal))- min(cast(cases as decimal)) as cases, Dat from innodb.UsCountyCaseInformation where Us_county='" + County +"' and (dat = date_sub(cast('" + Date1 + "' as date), interval 7 day) or dat = '" + Date1 + "')and state = '"+State+"' group by State, Us_county;"
-    cur.execute(sql)
-    datas = cur.fetchall()
-    print(datas)
-    result = []
-
-        # [{"cases": 1, 'date': '2020-1-25'}, {'cases': 1, 'date': '2020-1-26'}, {'cases': 1, 'date': datetime.datetime(2020, 1, 27, 0, 0)}]
-    #for data in datas:
-    #    data['date'] = data['date'].strftime('%d')
-    #    result.append(data)
-    #r1=json.dumps(result, indent=4, sort_keys=True, default=str)
-    #print(r1)
-    return render_template('search1.html',items=datas)
-
-@app.route('/2/',methods=['POST'])
-def search2():
-    Date = request.values.get('date')
-    State = request.values.get('state')
-    County = request.values.get('county')
-    sql = "select Dat, State, Us_county, max(cast(cases as decimal)) - min(cast(cases as decimal)) as increment, max(cast(cases as decimal)) as total from innodb.UsCountyCaseInformation where state like '%" + State + "%' and (dat = date_sub(cast('" + Date + "' as date), interval 1 day) or dat = '" + Date + "') and us_county like '%" + County + "%' group by State, Us_county"
-    cur.execute(sql)
-    datas = cur.fetchall()
-    return render_template('search2.html',items=datas)
-
-@app.route('/3/',methods=['POST'])
-def search3():
-    Startdate = request.values.get('startdate')
-    Enddate = request.values.get('enddate')
-    Country = request.values.get('country')
-    sql = "select Country, countryRec as Recovered, countryHos as Hospitalized, countryCase as Total_Cases, ROUND(countryRec/countryCase*100, 2) as Recover_Rate, ROUND(countryHos/countryCase*100, 2) as Hospitalized_Rate from (select max(recSum) - min(recSum) as countryRec from (select  dat, sum(recovered) as recSum from innodb.world_hospitalizing where CountryRegion = '" +Country + "' and (dat = '" +Startdate+"' or dat = '"+Enddate+"') group by dat) as t3) as t4, (select max(caseSum)-min(caseSum) as countryCase from (select dat, sum(cases) as caseSum from innodb.WorldTesting where Country_Region = '" +Country + "' and (dat = '" +Startdate+"' or dat = '"+Enddate+"') group by dat) as t1) as t5, (select distinct CountryRegion as Country from innodb.world_hospitalizing where CountryRegion = '" +Country + "')as t6,(select max(HosSum) - min(HosSum) as countryHos from (select  dat, sum(hospitalized) as HosSum from innodb.world_hospitalizing where CountryRegion = '" +Country + "' and (dat = '" +Startdate+"' or dat = '"+Enddate+"') group by dat) as t7) as t8"
-    cur.execute(sql)
-    datas = cur.fetchall()
-    return render_template('search3.html',items=datas)
-
-@app.route('/4/',methods=['POST'])
-def search4():
-    if request.values.get('country') == '':
-        startdate = "\"" + request.values.get('startdate') + "\""
-        enddate = "\"" + request.values.get('enddate') + "\""
-        query = "SELECT a.Country_Region, a.weekly_positive as positive, CONCAT( ROUND( a.weekly_positive / b.weekly_sum * 100, 2 ), \'\', \'%\' ) AS percent FROM( Select Country_Region, sum(daily_positive) As weekly_positive from innodb.WorldTesting where dat > {0} and dat < {1} and Province_State='All States' group by Country_Region ) a,(Select sum(weekly_positive) As weekly_sum from (Select Country_Region, sum(daily_positive) As weekly_positive from innodb.WorldTesting where dat > {2} and dat < {3} and Province_State='All States' group by Country_Region) As temp) b order by a.weekly_positive desc; ".format(
-            startdate, enddate, startdate, enddate)
-        cur.execute(query)
-        datas = cur.fetchall()
-        result = []
-        for data in datas:
-            percent = float(data['percent'].replace('%', ''))
-            if percent != 0:
-                result.append(data)
-        return render_template('search4.html', items=result)
-    else:
-        startdate = "\"" + request.values.get('startdate') + "\""
-        enddate = "\"" + request.values.get('enddate') + "\""
-        country = "\"" + request.values.get('country') + "\""
-        query = "SELECT a.Country_Region, a.weekly_positive as positive, CONCAT( ROUND( a.weekly_positive / b.weekly_sum * 100, 2 ), \'\', \'%\' ) AS percent FROM( Select Country_Region, sum(daily_positive) As weekly_positive from innodb.WorldTesting where dat > {0} and dat < {1} and Province_State='All States' group by Country_Region ) a,(Select sum(weekly_positive) As weekly_sum from (Select Country_Region, sum(daily_positive) As weekly_positive from innodb.WorldTesting where dat > {2} and dat < {3} and Province_State='All States' group by Country_Region) As temp) b where a.Country_Region={4}; ".format(startdate, enddate, startdate, enddate, country)
-        cur.execute(query)
-        datas = cur.fetchall()
-        return render_template('search4.html',items=datas)
-
-
-@app.route('/5/',methods=['POST'])
-def search5():
-    if request.values.get('country') == '':
-        startdate = "\"" + request.values.get('startdate') + "\""
-        enddate = "\"" + request.values.get('enddate') + "\""
-        query = "SELECT a.Country_Region, a.weekly_tested as tested, CONCAT( ROUND( a.weekly_tested / b.weekly_sum * 100, 2 ), \'\', \'%\' ) AS percent FROM( Select Country_Region, sum(daily_tested) As weekly_tested from innodb.WorldTesting where dat > {0} and dat < {1} and Province_State='All States' group by Country_Region ) a,(Select sum(weekly_tested) As weekly_sum from (Select Country_Region, sum(daily_tested) As weekly_tested from innodb.WorldTesting where dat > {2} and dat < {3} and Province_State='All States' group by Country_Region) As temp) b order by a.weekly_tested desc; ".format(
-            startdate, enddate, startdate, enddate)
-        cur.execute(query)
-        datas = cur.fetchall()
-        result = []
-        for data in datas:
-            percent = float(data['percent'].replace('%', ''))
-            if percent != 0:
-                result.append(data)
-        return render_template('search5.html', items=result)
-    else:
-        startdate = "\"" + request.values.get('startdate') + "\""
-        enddate = "\"" + request.values.get('enddate') + "\""
-        country = "\"" + request.values.get('country') + "\""
-        query = "SELECT a.Country_Region, a.weekly_tested as tested, CONCAT( ROUND( a.weekly_tested / b.weekly_sum * 100, 2 ), \'\', \'%\' ) AS percent FROM( Select Country_Region, sum(daily_tested) As weekly_tested from innodb.WorldTesting where dat > {0} and dat < {1} and Province_State='All States' group by Country_Region ) a,(Select sum(weekly_tested) As weekly_sum from (Select Country_Region, sum(daily_tested) As weekly_tested from innodb.WorldTesting where dat > {2} and dat < {3} and Province_State='All States' group by Country_Region) As temp) b where a.Country_Region={4}; ".format(startdate, enddate, startdate, enddate, country)
-        cur.execute(query)
-        datas = cur.fetchall()
-        return render_template('search5.html',items=datas)
-
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="https://d3js.org/topojson.v3.min.js"></script>
 
 
-if __name__ == '__main__':
-    app.run(debug=True,host='127.0.0.1',port='8080')
+<script src="https://unpkg.com/vega@5.17.0/build/vega.min.js"></script>
+<script src="https://unpkg.com/vega-lite@4.17.0/build/vega-lite.min.js"></script>
+<script src="https://unpkg.com/vega-lite-api@0.15.0/build/vega-lite-api.min.js"></script>
+<script src="https://unpkg.com/vega-tooltip@0.24.2/build/vega-tooltip.min.js"></script>
+<script>
+    if ('{{ items }}'){
+        (async () => {
+            const data = JSON.parse('{{ items }}'.replaceAll('&#39', '\"').replaceAll(';','').replaceAll('Decimal(','').replaceAll(')',''));
+            //console.log(data);
+			const tempdata = [{'Domain': 'Recovered', 'value': data[0].Recovered, 'rate': data[0].Recover_Rate+"%"}, {'Domain': 'Hospitalized', 'value': data[0].Hospitalized, 'rate': data[0].Hospitalized_Rate+"%"}, {'Domain': 'Other Cases', 'value': String(parseInt(data[0].Total_Cases) - parseInt(data[0].Recovered) - parseInt(data[0].Hospitalized)), 'rate': String((100-parseFloat(data[0].Hospitalized_Rate)-parseFloat(data[0].Recover_Rate))).slice(0,6)+"%"}];
+			//console.log(tempdata);
+
+            // Step 3. Draw the SVG.
+            // First let's create an empty SVG with 960px width and 600px height.
+            const dark = '#3e3c38';
+            const config = {
+              axis: {
+                domain: false,
+                tickColor: 'white'
+              },
+              style: {
+                "guide-label": {
+                  fontSize: 20,
+                  fill: dark
+                },
+                "guide-title": {
+                  fontSize: 20,
+                  fill: dark
+                }
+              }
+            };
+            vl.register(vega, vegaLite, {
+              view: { renderer: 'svg' },
+              init: view => { view.tooltip(new vegaTooltip.Handler().call); }
+            });
+            const viz = vl
+              .markArc()
+              .encode(
+                vl.theta().fieldQ('value'),
+                vl.color().fieldN('rate'),
+                vl.order().fieldQ('Domain'),
+                vl.tooltip([vl.fieldN('Domain'), vl.fieldQ('value'), vl.fieldN('rate')])
+              );
+            const marks = viz
+            .data(tempdata)
+            .width(600)
+            .height(400)
+            .autosize({ type: 'fit', contains: 'padding' })
+            .config(config);
+
+            document.body.appendChild(await marks.render());
+            
+          })();
+    }
+</script>
+
+<script type="text/javascript">
+	function goBack(){
+		window.location.replace("../")
+	}
+</script>
+
+</body>
+</html>
