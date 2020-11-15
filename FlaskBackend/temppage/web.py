@@ -59,6 +59,16 @@ def search2():
     datas = cur.fetchall()
     return render_template('search2.html',items=datas)
 
+@app.route('/3/',methods=['POST'])
+def search3():
+    Startdate = request.values.get('startdate')
+    Enddate = request.values.get('enddate')
+    Country = request.values.get('country')
+    sql = "select Country, countryRec as Recovered, countryHos as Hospitalized, countryCase as Total_Cases, ROUND(countryRec/countryCase*100, 2) as Recover_Rate, ROUND(countryHos/countryCase*100, 2) as Hospitalized_Rate from (select max(recSum) - min(recSum) as countryRec from (select  dat, sum(recovered) as recSum from innodb.world_hospitalizing where CountryRegion = '" +Country + "' and (dat = '" +Startdate+"' or dat = '"+Enddate+"') group by dat) as t3) as t4, (select max(caseSum)-min(caseSum) as countryCase from (select dat, sum(cases) as caseSum from innodb.WorldTesting where Country_Region = '" +Country + "' and (dat = '" +Startdate+"' or dat = '"+Enddate+"') group by dat) as t1) as t5, (select distinct CountryRegion as Country from innodb.world_hospitalizing where CountryRegion = '" +Country + "')as t6,(select max(HosSum) - min(HosSum) as countryHos from (select  dat, sum(hospitalized) as HosSum from innodb.world_hospitalizing where CountryRegion = '" +Country + "' and (dat = '" +Startdate+"' or dat = '"+Enddate+"') group by dat) as t7) as t8"
+    cur.execute(sql)
+    datas = cur.fetchall()
+    return render_template('search3.html',items=datas)
+
 @app.route('/4/',methods=['POST'])
 def search4():
     if request.values.get('country') == '':
