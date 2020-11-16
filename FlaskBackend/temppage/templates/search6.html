@@ -147,16 +147,16 @@
               .markBar()
               .encode(
                 //vl.x().fieldN('Country_Region'),
-                vl.y().fieldQ('increment'),
+                vl.y().fieldQ('total'),
                 vl.x().fieldN('Country_Region'),
                 vl.color().fieldN('Country_Region'),
-                vl.order().fieldQ('increment'),
-                vl.tooltip([vl.fieldN('Country_Region'), vl.fieldQ('increment')])
+                vl.order().fieldQ('total'),
+                vl.tooltip([vl.fieldN('Country_Region'), vl.fieldQ('total')])
               );
             const marks = viz
             .data(data)
             .width(960)
-            .height(800)
+            .height(600)
             .autosize({ type: 'fit', contains: 'padding' })
             .config(config);
 
@@ -166,10 +166,10 @@
               .markArc()
               .encode(
                 //vl.x().fieldN('Country_Region'),
-                vl.theta().fieldQ('increment'),
+                vl.theta().fieldQ('total'),
                 vl.color().fieldN('Country_Region'),
-                vl.order().fieldQ('increment'),
-                vl.tooltip([vl.fieldN('Country_Region'), vl.fieldQ('increment')])
+                vl.order().fieldQ('total'),
+                vl.tooltip([vl.fieldN('Country_Region'), vl.fieldQ('total')])
               );
             const marks1 = viz1
             .data(data)
