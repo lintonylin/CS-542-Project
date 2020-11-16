@@ -149,13 +149,14 @@
                 //vl.x().fieldN('Country_Region'),
                 vl.y().fieldQ('increment'),
                 vl.x().fieldN('Country_Region'),
+                vl.color().fieldN('Country_Region'),
                 vl.order().fieldQ('increment'),
                 vl.tooltip([vl.fieldN('Country_Region'), vl.fieldQ('increment')])
               );
             const marks = viz
             .data(data)
             .width(960)
-            .height(600)
+            .height(800)
             .autosize({ type: 'fit', contains: 'padding' })
             .config(config);
 
