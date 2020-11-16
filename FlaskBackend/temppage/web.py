@@ -128,9 +128,9 @@ def search6():
     Date = request.values.get('date')
     Country = request.values.get('country')
     if len(Country) > 0:
-        sql = "select Country_Region, max(cast(death as decimal)) - min(cast(death as decimal)) as increment, max(cast(death as decimal)) as total from innodb.world_death where (dat = date_sub(cast('"+ Date + "' as date), interval 1 day) or dat = '" + Date + "') and Country_Region like '" + Country + "' and Province_State='All States'group by Country_Region"
+        sql = "select Country_Region, increment, total from (select Country_Region, max(cast(death as decimal)) - min(cast(death as decimal)) as increment, max(cast(death as decimal)) as total from innodb.world_death where (dat = date_sub(cast('"+ Date + "' as date), interval 1 day) or dat = '" + Date + "') and Country_Region like '" + Country + "' and Province_State='All States'group by Country_Region) a where a.total != 0"
     else:
-        sql = "select Country_Region, max(cast(death as decimal)) - min(cast(death as decimal)) as increment, max(cast(death as decimal)) as total from innodb.world_death where (dat = date_sub(cast('" + Date + "' as date), interval 1 day) or dat = '" + Date + "') and Province_State='All States'group by Country_Region"
+        sql = "select Country_Region, increment, total from (select Country_Region, max(cast(death as decimal)) - min(cast(death as decimal)) as increment, max(cast(death as decimal)) as total from innodb.world_death where (dat = date_sub(cast('" + Date + "' as date), interval 1 day) or dat = '" + Date + "') and Province_State='All States'group by Country_Region) a where a.total != 0"
     cur.execute(sql)
     datas = cur.fetchall()
     return render_template('search6.html',items=datas)
