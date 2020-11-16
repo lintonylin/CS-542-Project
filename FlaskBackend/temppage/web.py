@@ -29,6 +29,11 @@ def search():
     elif qtype == 'new deaths':
         type_number = 5
         return render_template('search5.html')
+    elif qtype == 'deaths on a day':
+        type_number = 6
+        return render_template('search6.html')
+
+
 @app.route('/1/',methods=['POST'])
 def search1():
     Date1 = request.values.get('date1')
@@ -118,6 +123,17 @@ def search5():
         datas = cur.fetchall()
         return render_template('search5.html',items=datas)
 
+@app.route('/6/',methods=['POST'])
+def search6():
+    Date = request.values.get('date')
+    Country = request.values.get('country')
+    if len(Country) > 0:
+        sql = "select Country_Region, max(cast(death as decimal)) - min(cast(death as decimal)) as increment, max(cast(death as decimal)) as total from innodb.world_death where (dat = date_sub(cast('"+ Date + "' as date), interval 1 day) or dat = '" + Date + "') and Country_Region like '" + Country + "' and Province_State='All States'group by Country_Region"
+    else:
+        sql = "select Country_Region, max(cast(death as decimal)) - min(cast(death as decimal)) as increment, max(cast(death as decimal)) as total from innodb.world_death where (dat = date_sub(cast('" + Date + "' as date), interval 1 day) or dat = '" + Date + "') and Province_State='All States'group by Country_Region"
+    cur.execute(sql)
+    datas = cur.fetchall()
+    return render_template('search6.html',items=datas)
 
 
 if __name__ == '__main__':
