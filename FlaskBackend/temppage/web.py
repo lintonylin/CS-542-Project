@@ -40,7 +40,7 @@ def search1():
     Date2 = request.values.get('date2')
     County = request.values.get('county')
     State = request.values.get ('state')
-    sql = "select cases,date from innodb.US_COUNTY_TEST where county like '%" + County + "%' and state like '%" + State + "%' date between '"+Date1+"' and '"+Date2+"';"
+    sql = "select cases,date from innodb.US_COUNTY_TEST where county like '%" + County + "%' and state like '%" + State + "%'and date between '"+Date1+"' and '"+Date2+"';"
     cur.execute(sql)
     datas = cur.fetchall()
     print(datas)
