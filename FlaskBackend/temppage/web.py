@@ -48,7 +48,7 @@ def search1():
 
         # [{"cases": 1, 'date': '2020-1-25'}, {'cases': 1, 'date': '2020-1-26'}, {'cases': 1, 'date': datetime.datetime(2020, 1, 27, 0, 0)}]
     for data in datas:
-        data['date'] = data['date'].strftime('%d')
+        data['date'] = data['date'].strftime('%m-%d')
         result.append(data)
     r1=json.dumps(result, indent=4, sort_keys=True, default=str)
     print(r1)
