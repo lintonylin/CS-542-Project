@@ -9,7 +9,9 @@ c = conn.cursor()
 Date1 = " \'2020-1-21\' "
 Date2 = " \'2020-1-27\' "
 County =" \'Orange\' "
-c.execute('select cases as cases,date,county from innodb.US_COUNTY_TEST where county like' + County +' and date between '+Date1+' and '+Date2+';')
+State = " \'California\' "
+    sql = "select cases,date from innodb.US_COUNTY_TEST where county like '%" + County + "%' and state like '%" + State + "%'and date between '"+Date1+"' and '"+Date2+"';"
+    cur.execute(sql)
 
 result = c.fetchall()
 print(result)
