@@ -59,7 +59,7 @@ def search2():
     Date = request.values.get('date')
     State = request.values.get('state')
     County = request.values.get('county')
-    sql = "select Dat, State, Us_county, max(cast(cases as decimal)) - min(cast(cases as decimal)) as increment, max(cast(cases as decimal)) as total from innodb.UsCountyCaseInformation where state like '%" + State + "%' and (dat = date_sub(cast('" + Date + "' as date), interval 1 day) or dat = '" + Date + "') and us_county like '%" + County + "%' group by State, Us_county"
+    sql = "select '"+Date+"' as Dat, State, Us_county, max(cast(cases as decimal)) - min(cast(cases as decimal)) as increment, max(cast(cases as decimal)) as total from innodb.UsCountyCaseInformation where state like '%" + State + "%' and (dat = date_sub(cast('" + Date + "' as date), interval 1 day) or dat = '" + Date + "') and us_county like '%" + County + "%' group by State, Us_county"
     cur.execute(sql)
     datas = cur.fetchall()
     return render_template('search2.html',items=datas)
