@@ -2,18 +2,18 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Search COVID19</title>
+    <title>COVID19 Cases Information</title>
 	<style type="text/css">
 	.button {
 		background-color: #f44336;
 		border: none;
 		color: white;
-		padding: 15px 32px;
+		padding: 12px 30px;
 		text-align: center;
 		text-decoration: none;
 		display: inline-block;
-		font-family: Georgia, "Times New Roman", Times, serif;
-		font-size: 20px;
+		font-family: "Arial Black", Gadget, sans-serif;
+		font-size: 24px;
 		-webkit-transition-duration: 0.4s;
 		transition-duration: 0.4s;
 		border-radius: 4px;
@@ -24,26 +24,55 @@
 	}
 	.choices{
 		padding-left:10%;
-		padding-top:10%;
+		padding-top:5%;
 		padding-bottom:15px;
 		font-size: 24px;
 		font-family: Georgia, "Times New Roman", Times, serif;
 	}
+	.part{
+		padding-top:10px;
+		padding-bottom:10px;
+		font-size: 28px;
+		font-family: "Arial Black", Gadget, sans-serif;
+	}
+	.bd-navbar {position: -webkit-sticky;position: sticky;top: 0;z-index: 1071;}
+	.bd-navbar {min-height: 3rem;background-color: #000000;box-shadow: 0 0.5rem 1rem rgba(220, 70, 120, 0.2), inset 0 -1px 0 rgba(0,0,0,.1);}
+	.navbar-expand {-ms-flex-flow: row nowrap;flex-flow: row nowrap;-ms-flex-pack: start;justify-content: flex-start;}
+	.navbar-expand .navbar-nav {-ms-flex-direction: row;flex-direction: row;}
+	.navbar-nav {display: -ms-flexbox;display: flex;-ms-flex-direction: column;flex-direction: column;padding-left: 0;margin-bottom: 0;list-style: none;}
+	.navbar {position: relative;display: -ms-flexbox;display: flex;-ms-flex-wrap: wrap;flex-wrap: wrap;-ms-flex-align: center;align-items: center;-ms-flex-pack: justify;justify-content: space-between;padding: .5rem 1rem;}
+	ul {display: block;list-style-type: disc;margin-block-start: 1em;margin-block-end: 1em;margin-inline-start: 0px;margin-inline-end: 0px;padding-inline-start: 40px;}
+	li {font-size: 18px;display: list-item;text-align: -webkit-match-parent;}
+	.bd-navbar .navbar-nav .nav-link {padding-right: .5rem;padding-left: .5rem;color: #ff6666;}
+	.nav-item{padding-top:10px;padding-left:5px;padding-bottom:20px;}
 	</style>
 </head>
-<body>
+<body style="background-image:url(https://i.ytimg.com/vi/uSHHFra7SgU/maxresdefault.jpg);background-repeat:no-repeat; background-size: 50%;background-position: 95% 80%;">
+
+<header class="navbar navbar-expand navbar-dark flex-column flex-md-row bd-navbar">
+	<div class="navbar-nav-scroll">
+	<ul class="navbar-nav bd-navbar-nav">
+		<img src="https://www.greenwoodinfo.co.nz/wp-content/uploads/coronavirus-covid-19-icon-uc-davis-200.png" style="height: 50px">
+		<li class="nav-item" style="color: #ffffff; font-size:30px; padding-left: 20px; padding-top:2px; font-family: Arial Black, Gadget, sans-serif;"> COVID-19 CASES INFORMATION | </li>
+	</ul>
+	</div>
+</header>
+
 
 <div class = "choices">
 <form action="/gets/" method = "post">
-	<p><input type = "radio" name= "qt" value="cases in a week" onchange="radioChange(this)" checked><font color=black>Cumulative Cases in a county by a week</font></p>
-		<p><input type = "radio" name= "qt" value="cases on a day" onchange="radioChange(this)"><font color=black> Cases on a day in United States</font></p>
-		<p><input type = "radio" name= "qt" value="hospitalized rate" onchange="radioChange(this)"><font color=black> Hospitalized and recovered rate of a country by month</font></p>
-		<p><input type = "radio" name= "qt" value="new cases" onchange="radioChange(this)"><font color=black> New cases by country by the date range</font></p>
-		<p><input type = "radio" name= "qt" value="new deaths" onchange="radioChange(this)"><font color=black> Total Test by country in a date range</font></p>
-    <p><input type = "radio" name= "qt" value="deaths on a day" onchange="radioChange(this)"><font color=black> Deaths on a day of a country</font></p>
+		<div class = "part"><img src="https://cdn.pixabay.com/photo/2020/04/29/07/54/coronavirus-5107715_960_720.png" style="height:42px"> United States </div>
+		<p><input type = "radio" name= "qt" value="cases in a week" onchange="radioChange(this)" checked><font color=black> Cumulative Cases in a county by a week</font></p>
+		<p><input type = "radio" name= "qt" value="cases on a day" onchange="radioChange(this)"><font color=black> Cases on a day </font></p>
+		
+		<div class = "part"><img src="https://cdn.pixabay.com/photo/2020/04/29/07/54/coronavirus-5107715_960_720.png" style="height:42px"> World </div>
+		<p><input type = "radio" name= "qt" value="hospitalized rate" onchange="radioChange(this)"><font color=black> Hospitalized and recovered rate of a country </font></p>
+		<p><input type = "radio" name= "qt" value="new cases" onchange="radioChange(this)"><font color=black> New cases by country in a time range </font></p>
+		<p><input type = "radio" name= "qt" value="new deaths" onchange="radioChange(this)"><font color=black> Total Test by country in a time range </font></p>
+		<p><input type = "radio" name= "qt" value="deaths on a day" onchange="radioChange(this)"><font color=black> Deaths of a country on a day </font></p>
 
 </div>
-	<div  align="left" style="padding-left:10%; padding-top:10px; padding-bottom:15px">
+	<div  align="left" style="padding-left:20%; padding-top:10px; padding-bottom:15px">
 		<input type="submit" value = "GO" class="button">
 	</div>
 </form>
